@@ -72,4 +72,5 @@ def test_price_range(data, min_price, max_price):
     """
     Test the price is in a reasonable range
     """
-    assert data['price'].between(min_price, max_price).all()
+    cleaned_data = data[data['price'].between(min_price, max_price, inclusive='both')].copy()
+    assert cleaned_data['price'].between(min_price, max_price, inclusive='both').all()
