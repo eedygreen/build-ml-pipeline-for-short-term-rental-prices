@@ -29,7 +29,7 @@ def go(args):
     df = df.drop_duplicates().reset_index(drop=True)
 
     logger.info("Feature engineering...")
-    df['price'] = df['price'].fillna(value='')
+    df['price'] = df['price'].fillna(0)
     df_filtered = df[df['price'].between(args.min_price, args.max_price, inclusive='both')]
     
     filename = "clean_sample.csv"
