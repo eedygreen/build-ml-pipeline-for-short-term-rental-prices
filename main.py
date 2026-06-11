@@ -114,12 +114,15 @@ def go(config: DictConfig):
             )
 
         if "test_regression_model" in active_steps:
-
-            ##################
-            # Implement here #
-            ##################
-
-            pass
+            _ = mlflow.run(
+                f"{config['main']['components_repository']}/test_regression_model",
+                "main",
+                env_manager="conda",
+                parameters={
+                    "mlflow_model": "idris-isah2-udacity/nyc_airbnb/random_forest_export:prod",
+                    "test_artifact": "idris-isah2-udacity/nyc_airbnb/test_data.csv:latest"
+                },
+            )
 
 
 if __name__ == "__main__":
