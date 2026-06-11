@@ -70,8 +70,8 @@ def go(config: DictConfig):
                 "main",
                 env_manager="conda",
                 parameters={
-                    "csv": "idris-isah2-udacity/nyc_airbnb/sample.csv:latest",
-                    "ref": "idris-isah2-udacity/nyc_airbnb/cleaned_sample.csv:reference",
+                    "csv": "idris-isah2-udacity/nyc_airbnb/clean_sample.csv:reference",
+                    "ref": "idris-isah2-udacity/nyc_airbnb/sample.csv:latest",
                     "kl_threshold": config['data_check']['kl_threshold'],
                     "min_price": config['etl']['min_price'],
                     "max_price": config['etl']['max_price']
