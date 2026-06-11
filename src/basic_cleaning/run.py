@@ -32,6 +32,12 @@ def go(args):
     df['price'] = df['price'].fillna(0)
     df_filtered = df[df['price'].between(args.min_price, args.max_price, inclusive='both')]
     
+    idx = (
+        df_filtered['longitude'].between(-74.25, -73.50) &
+        df_filtered['latitude'].between(40.5, 41.2)
+    )
+    df_filtered = df_filtered[idx].reset_index(drop=True).copy()
+    
     filename = "clean_sample.csv"
     df_filtered.to_csv(filename, index=False)
 
