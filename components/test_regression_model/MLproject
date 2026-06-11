@@ -9,7 +9,7 @@ entry_points:
         description: An MLflow serialized model
         type: string
 
-      test_dataset:
+      test_artifact:
         description: The test artifact
         type: string
 
