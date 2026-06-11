@@ -62,7 +62,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--test_dataset",
+        "--test_artifact",
         type=str, 
         help="Test dataset",
         required=True
