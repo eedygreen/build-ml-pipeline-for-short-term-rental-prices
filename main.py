@@ -87,7 +87,7 @@ def go(config: DictConfig):
                 parameters={
                     "input": "idris-isah2-udacity/nyc_airbnb/clean_sample.csv:reference",
                     "test_size": config['modeling']['test_size'],
-                    "random_seed": config['modeling']['test_size'],
+                    "random_seed": config['modeling']['random_seed'],
                     "stratify_by": config['modeling']['stratify_by']
                 },
             )
