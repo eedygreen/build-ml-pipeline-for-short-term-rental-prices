@@ -80,10 +80,17 @@ def go(config: DictConfig):
 
 
         if "data_split" in active_steps:
-            ##################
-            # Implement here #
-            ##################
-            pass
+            _ = mlflow.run(
+                f"{config['main']['components_repository']}/train_val_test_split",
+                "main",
+                env_manager="conda",
+                parameters={
+                    "input": "idris-isah2-udacity/nyc_airbnb/clean_sample.csv:reference",
+                    "test_size": config['modeling']['test_size'],
+                    "random_seed": config['modeling']['test_size'],
+                    "stratify_by": config['modeling']['stratify_by']
+                },
+            )
 
         if "train_random_forest" in active_steps:
 
