@@ -1,3 +1,10 @@
+# =============================================================================
+# Project: NYC Housing Price Predictor
+# Description: Trains a random forest model on cleaned NYC real estate data.
+#              Ensures all coordinates fall within users chose boundaries.
+# Usage:       mlflow run src/eda
+# =============================================================================
+
 name: eda
 conda_env: conda.yml
 

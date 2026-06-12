@@ -1,4 +1,13 @@
-name: download_file
+# Description: Trains a random forest model on cleaned NYC real estate data.
+#              Ensures all coordinates fall within users chose boundaries.
+# Usage:       mlflow run components/train_val_test_split -P input="dataset.csv:latest" \
+#                   -P test_size=test_size \
+#                   -P random_seed=random_seed \
+#                   -P stratify_by=stratify_by \
+#           or
+#             mlflow run . -P steps="data_split"
+# =============================================================================
+name: train_val_test_split
 conda_env: conda.yml
 
 entry_points:

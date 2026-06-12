@@ -1,3 +1,14 @@
+# Project: NYC Housing Price Predictor
+# Description: Trains a random forest model on cleaned NYC real estate data.
+#              Ensures all coordinates fall within users chose boundaries.
+# Usage:       mlflow run components/get_data -P sample="sample.csv:latest" \
+#                   -P artifact_name=artifact_name \
+#                   -P artifact_type=artifact_type \
+#                   -P artifact_description=artifact_description
+#           or
+#             mlflow run . -P steps="download"
+# =============================================================================
+
 name: download_file
 conda_env: conda.yml
 
