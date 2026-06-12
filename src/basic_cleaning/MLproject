@@ -2,11 +2,13 @@
 # Project: NYC Housing Price Predictor
 # Description: Trains a random forest model on cleaned NYC real estate data.
 #              Ensures all coordinates fall within users chose boundaries.
-# Usage:       mlflow run . -P input_artifact="input_artifact" \
+# Usage:       mlflow run src/basic_cleaning -P input_artifact="input_artifact" \
 #                   -P output_artifact="output_artifact" \
 #                   -P output_type="output_type" \
 #                   -P output_description="output_description" \ 
 #                   -P min_price="min_price" -P max_price="max_price"
+#         or
+#             mlflow run . -P steps="basic_cleaning"
 # =============================================================================
 
 name: basic_cleaning
