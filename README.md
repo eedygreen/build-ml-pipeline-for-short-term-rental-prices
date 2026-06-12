@@ -31,6 +31,8 @@ In this project you will build such a pipeline.
   * [Train the model on a new data sample](#train-the-model-on-a-new-data-sample)
 - [Cleaning up](#cleaning-up)
 
+- [Project Completion](#project-completion)
+
 ## Preliminary steps
 
 ### Supported Operating Systems
@@ -588,7 +590,8 @@ If you see the any error while running the command:
 
 Please, make sure all steps are using **the same** python version and that you have **conda installed**. Additionally, *mlflow* and *wandb* packages are crucial and should have the same version.
 
-
+### Project Completion
+W&B Public Link: [wandb.ai/idris-isah2-udacity/nyc_airbnb](https://wandb.ai/idris-isah2-udacity/nyc_airbnb?nw=nwuseridrisisah2)
 ## License
 
 [License](LICENSE.txt)
