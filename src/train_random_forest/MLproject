@@ -1,3 +1,17 @@
+# =============================================================================
+# Project: NYC Housing Price Predictor
+# Description: Trains a random forest model on cleaned NYC real estate data.
+#              Ensures all coordinates fall within users chose boundaries.
+# Usage:       mlflow run src/train_random_forest -P train_artifact="trainval_dataset.csv:latest" \
+#                   -P val_size=val_size \
+#                   -P stratify_by=stratify_by \
+#                   -P rf_config=rf_config \
+#                   -P max_tfidf_features="max_tfidf_features" \
+#                   -P output_artifact="output_artifact_name"
+#           or
+#             mlflow run . -P steps="train_random_forest"
+# =============================================================================
+
 name: train_random_forest
 conda_env: conda.yml
 
