@@ -1,6 +1,6 @@
 name: components
 channels:
+  - nodefaults
   - conda-forge
-  - defaults
 dependencies:
   - mlflow=2.9.0

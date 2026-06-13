@@ -29,8 +29,8 @@ def go(args):
             os.path.join("data", args.sample),
             run,
         )
-
         logger.info("Upload completed!")
+        
     except ValueError as err:
         logger.error(f"get_data: error {err}")
     except Exception as e:
