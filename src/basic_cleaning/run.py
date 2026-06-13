@@ -46,7 +46,7 @@ def go(args):
     except ValueError as err:
         logger.error(f"basic_cleaning: error {err}")
     except Exception as e:
-        logger.error(f"basic_cleaning: error {e}")
+        logger.error(f"basic_cleaning: error {e}", exc_info=True)
     
     try: 
         artifact = wandb.Artifact(
@@ -64,7 +64,7 @@ def go(args):
     except ValueError as err:
         logger.error(f"basic_cleaning: error {err}")
     except Exception as e:
-        logger.error(f"basic_cleaning: error {e}")
+        logger.error(f"basic_cleaning: error {e}", exc_info=True)
 
 
 if __name__ == "__main__":
