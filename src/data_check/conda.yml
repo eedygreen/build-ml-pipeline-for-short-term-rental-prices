@@ -1,7 +1,7 @@
 name: data_check
 channels:
+  - nodefaults
   - conda-forge
-  - defaults
 dependencies:
   - python=3.13
   - pandas=2.3.2

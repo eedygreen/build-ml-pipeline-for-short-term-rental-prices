@@ -21,33 +21,43 @@ def go(args):
 
     # Download input artifact. This will also note that this script is using this
     # particular version of the artifact
-    logger.info(f"Fetching artifact {args.input}")
-    artifact_local_path = run.use_artifact(args.input).file()
+    try:
+        logger.info(f"Fetching artifact {args.input}")
+        artifact_local_path = run.use_artifact(args.input).file()
 
-    df = pd.read_csv(artifact_local_path)
+        df = pd.read_csv(artifact_local_path)
 
-    logger.info("Splitting trainval and test")
-    trainval, test = train_test_split(
-        df,
-        test_size=args.test_size,
-        random_state=args.random_seed,
-        stratify=df[args.stratify_by] if args.stratify_by != 'none' else None,
-    )
+        logger.info("Splitting trainval and test")
+        trainval, test = train_test_split(
+            df,
+            test_size=args.test_size,
+            random_state=args.random_seed,
+            stratify=df[args.stratify_by] if args.stratify_by != 'none' else None,
+        )
+    except ValueError as e:
+        logger.error(f"train_val_test_split: error {e}")
+    except Exception as e:
+        logger.error(f"train_val_test_split: error {e}", exc_info=True)
 
     # Save to output files
-    for df, k in zip([trainval, test], ['trainval', 'test']):
-        logger.info(f"Uploading {k}_data.csv dataset")
-        with tempfile.NamedTemporaryFile("w") as fp:
+    try:
+        for df, k in zip([trainval, test], ['trainval', 'test']):
+            logger.info(f"Uploading {k}_data.csv dataset")
+            with tempfile.NamedTemporaryFile("w") as fp:
 
-            df.to_csv(fp.name, index=False)
+                df.to_csv(fp.name, index=False)
 
-            log_artifact(
-                f"{k}_data.csv",
-                f"{k}_data",
-                f"{k} split of dataset",
-                fp.name,
-                run,
-            )
+                log_artifact(
+                    f"{k}_data.csv",
+                    f"{k}_data",
+                    f"{k} split of dataset",
+                    fp.name,
+                    run,
+                )
+        logger.info("Uploads Completed!")
+
+    except Exception as e:
+        logger.error(f"train_val_test_split: error {e}", exc_info=True)
 
 
 if __name__ == "__main__":

@@ -19,15 +19,22 @@ def go(args):
     run = wandb.init(job_type="download_file")
     run.config.update(args)
 
-    logger.info(f"Returning sample {args.sample}")
-    logger.info(f"Uploading {args.artifact_name} to Weights & Biases")
-    log_artifact(
-        args.artifact_name,
-        args.artifact_type,
-        args.artifact_description,
-        os.path.join("data", args.sample),
-        run,
-    )
+    try:
+        logger.info(f"Returning sample {args.sample}")
+        logger.info(f"Uploading {args.artifact_name} to Weights & Biases")
+        log_artifact(
+            args.artifact_name,
+            args.artifact_type,
+            args.artifact_description,
+            os.path.join("data", args.sample),
+            run,
+        )
+        logger.info("Upload completed!")
+
+    except ValueError as err:
+        logger.error(f"get_data: error {err}")
+    except Exception as e:
+        logger.error(f"get_data: error {e}", exc_info=True)
 
 
 if __name__ == "__main__":
