@@ -48,92 +48,99 @@ def go(args):
     run.config.update(args)
 
     # Get the Random Forest configuration and update W&B
-    with open(args.rf_config) as fp:
-        rf_config = json.load(fp)
-    run.config.update(rf_config)
+    try: 
+        with open(args.rf_config) as fp:
+            rf_config = json.load(fp)
+        run.config.update(rf_config)
 
-    # Fix the random seed for the Random Forest, so we get reproducible results
-    rf_config['random_state'] = args.random_seed
+        # Fix the random seed for the Random Forest, so we get reproducible results
+        rf_config['random_state'] = args.random_seed
 
-    trainval_local_path = run.use_artifact(args.trainval_artifact).file()
+        trainval_local_path = run.use_artifact(args.trainval_artifact).file()
 
-    X = pd.read_csv(trainval_local_path)
-    y = X.pop("price")  # this removes the column "price" from X and puts it into y
+        X = pd.read_csv(trainval_local_path)
+        y = X.pop("price")  # this removes the column "price" from X and puts it into y
 
-    logger.info(f"Minimum price: {y.min()}, Maximum price: {y.max()}")
+        logger.info(f"Minimum price: {y.min()}, Maximum price: {y.max()}")
 
-    X_train, X_val, y_train, y_val = train_test_split(
-        X, y, test_size=args.val_size, stratify=X[args.stratify_by], random_state=args.random_seed
-    )
+        X_train, X_val, y_train, y_val = train_test_split(
+            X, y, test_size=args.val_size, stratify=X[args.stratify_by], random_state=args.random_seed
+        )
 
-    logger.info("Preparing sklearn pipeline")
+        logger.info("Preparing sklearn pipeline")
 
-    sk_pipe, processed_features = get_inference_pipeline(rf_config, args.max_tfidf_features)
+        sk_pipe, processed_features = get_inference_pipeline(rf_config, args.max_tfidf_features)
 
-    # Then fit it to the X_train, y_train data
-    logger.info("Fitting")
+        # Then fit it to the X_train, y_train data
+        logger.info("Fitting")
 
-    sk_pipe.fit(X_train[processed_features], y_train)
+        sk_pipe.fit(X_train[processed_features], y_train)
 
-    # Compute r2 and MAE
-    logger.info("Scoring")
-    r_squared = sk_pipe.score(X_val, y_val)
+        # Compute r2 and MAE
+        logger.info("Scoring")
+        r_squared = sk_pipe.score(X_val, y_val)
 
-    pred = sk_pipe.predict(X_val[processed_features])
-    mae = mean_absolute_error(y_val, pred)
+        pred = sk_pipe.predict(X_val[processed_features])
+        mae = mean_absolute_error(y_val, pred)
 
-    logger.info(f"Score: {r_squared}")
-    logger.info(f"MAE: {mae}")
+        logger.info(f"Score: {r_squared}")
+        logger.info(f"MAE: {mae}")
 
-    logger.info("Exporting model")
+        logger.info("Exporting model")
 
     # Save model package in the MLFlow sklearn format
-    if os.path.exists("random_forest_dir"):
-        shutil.rmtree("random_forest_dir")
+        if os.path.exists("random_forest_dir"):
+            shutil.rmtree("random_forest_dir")
 
-    if args.output_artifact != "null":
+        if args.output_artifact != "null":
 
-        signature = infer_signature(X_val[processed_features], pred)
+            signature = infer_signature(X_val[processed_features], pred)
 
-        with tempfile.TemporaryDirectory() as temp_dir:
+            with tempfile.TemporaryDirectory() as temp_dir:
 
-            export_path = os.path.join(temp_dir, "random_forest_dir")
+                export_path = os.path.join(temp_dir, "random_forest_dir")
 
-            logger.info("Saving model...")
-            mlflow.sklearn.save_model(
-                sk_pipe,
-                export_path,
-                serialization_format=mlflow.sklearn.SERIALIZATION_FORMAT_CLOUDPICKLE,
-                signature=signature,
-                input_example=X_val.iloc[:2],
-            )
+                logger.info("Saving model...")
+                mlflow.sklearn.save_model(
+                    sk_pipe,
+                    export_path,
+                    serialization_format=mlflow.sklearn.SERIALIZATION_FORMAT_CLOUDPICKLE,
+                    signature=signature,
+                    input_example=X_val.iloc[:2],
+                )
 
-            logger.info("Uploading model to artifact...")
-            artifact = wandb.Artifact(
-                args.output_artifact,
-                type="model_export",
-                description="Random Forest pipeline export",
-                metadata=rf_config,
-            )
-            artifact.add_dir(export_path)
+                logger.info("Uploading model to artifact...")
+                artifact = wandb.Artifact(
+                    args.output_artifact,
+                    type="model_export",
+                    description="Random Forest pipeline export",
+                    metadata=rf_config,
+                )
+                artifact.add_dir(export_path)
 
-            run.log_artifact(artifact)
-            artifact.wait()
-            logger.info("Model upload completed!")
+                run.log_artifact(artifact)
+                artifact.wait()
+                logger.info("Model upload completed!")
+    except ValueError as err:
+        logger.error(f"train_random_forest: error {err}")
+    except Exception as e:
+        logger.error(f"train_random_forest: {e}", exc_info=True)
 
     # Plot feature importance
-    fig_feat_imp = plot_feature_importance(sk_pipe, processed_features)
+    try:
+        fig_feat_imp = plot_feature_importance(sk_pipe, processed_features)
 
-    run.summary['r2'] = r_squared
-    run.summary['mae'] = mae
+        run.summary['r2'] = r_squared
+        run.summary['mae'] = mae
 
-    # Upload to W&B the feture importance visualization
-    run.log(
-        {
-          "feature_importance": wandb.Image(fig_feat_imp),
-        }
-    )
-
+        # Upload to W&B the feture importance visualization
+        run.log(
+            {
+            "feature_importance": wandb.Image(fig_feat_imp),
+            }
+        )
+    except Exception as e:
+        logger.error(f"train_random_forest: {e}", exc_info=True)
 
 def plot_feature_importance(pipe, feat_names):
     # We collect the feature importance for all non-nlp features first
