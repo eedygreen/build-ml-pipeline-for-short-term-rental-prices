@@ -1,7 +1,7 @@
 name: test_regression_model
 channels:
+  - nodefaults
   - conda-forge
-  - defaults
 dependencies:
   - python=3.13
   - pip=24.3.1
