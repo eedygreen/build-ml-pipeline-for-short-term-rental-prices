@@ -29,6 +29,8 @@ def go(args):
         run,
     )
 
+    logger.info("Upload completed!")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Download URL to a local destination")
