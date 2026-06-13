@@ -115,6 +115,12 @@ The script ``run.py`` will receive the input parameters ``parameter1``, ``parame
 > mlflow run src/promote_pipeline -P parameter1=1 -P parameter2=2 -P parameter3="test"
 ```
 
+To run the project without cloning the repository, you can also use the following command:
+
+```bash
+> mlflow run https://github.com/eedygreen/build-ml-pipeline-for-short-term-rental-prices.git -v 1.0.3 -P hydra_options="etl.sample='sample2.csv'"
+```
+
 ### The configuration
 This completed project is designed to be flexible and reusable, so that you can easily adapt it to your needs and use it for other projects. In order to do so, the parameters controlling the pipeline are defined in the ``config.yaml`` file in the root of this repository. Hydra is used to manage this configuration file. 
 Open this file and get familiar with its content. Remember: this file is only read by the ``main.py`` script (i.e., the pipeline) and its content is available with the ``go`` function in ``main.py`` as the ``config`` dictionary.
